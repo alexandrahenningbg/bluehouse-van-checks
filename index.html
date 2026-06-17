@@ -76,30 +76,33 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
     let sheetData = {};
 
-    window.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const response = await fetch(API_URL);
-            sheetData = await response.json();
-            
-            if (sheetData.error) {
-                document.getElementById('loadingStatus').innerText = "Google Sheets Error: " + sheetData.error;
-                return;
-            }
-
-            const cities = [...new Set(sheetData.associates.map(a => a.city))];
-            const citySelect = document.getElementById('city');
-            cities.forEach(c => {
-                let opt = document.createElement('option');
-                opt.value = c; opt.textContent = c;
-                citySelect.appendChild(opt);
-            });
-
-            document.getElementById('loadingStatus').style.display = 'none';
-            document.getElementById('vanAuditForm').style.display = 'block';
-        } catch(e) {
-            document.getElementById('loadingStatus').innerText = "Failed loading configurations. Network Blocked.";
-            console.error(e);
+    // Handles the cross-origin dynamic callback payload
+    window.processSheetConfig = function(data) {
+        sheetData = data;
+        if (sheetData.error) {
+            document.getElementById('loadingStatus').innerText = "Google Config Error: " + sheetData.error;
+            return;
         }
+
+        const cities = [...new Set(sheetData.associates.map(a => a.city))];
+        const citySelect = document.getElementById('city');
+        cities.forEach(c => {
+            let opt = document.createElement('option');
+            opt.value = c; opt.textContent = c;
+            citySelect.appendChild(opt);
+        });
+
+        document.getElementById('loadingStatus').style.display = 'none';
+        document.getElementById('vanAuditForm').style.display = 'block';
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const jsonpScript = document.createElement('script');
+        jsonpScript.src = API_URL + "?callback=processSheetConfig";
+        jsonpScript.onerror = () => {
+            document.getElementById('loadingStatus').innerText = "Configuration fetch error. Connection restricted.";
+        };
+        document.body.appendChild(jsonpScript);
     });
 
     document.getElementById('city').addEventListener('change', (e) => {
@@ -124,15 +127,13 @@
 
         sheetData.vans.filter(v => v.city === selectedCity).forEach(v => {
             let opt = document.createElement('option');
-            opt.value = v.vanId;
-            opt.textContent = v.vanId;
+            opt.value = v.vanId; opt.textContent = v.vanId;
 
             const maintenanceMatch = sheetData.disabledVans.find(d => d.vanId === v.vanId && today >= d.startDate && today <= d.endDate);
             if(maintenanceMatch) {
                 opt.disabled = true;
                 opt.textContent += ` (Disabled: ${maintenanceMatch.reason})`;
             }
-
             vanSelect.appendChild(opt);
         });
 
@@ -150,7 +151,7 @@
     document.getElementById('vanAuditForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "Uploading Photos & Logging Entry...";
+        btn.disabled = true; btn.innerText = "Processing Photos & Sending Data...";
 
         try {
             const payload = {
@@ -187,7 +188,7 @@
             document.getElementById('associateName').disabled = true;
             document.getElementById('vanId').disabled = true;
         } catch (err) {
-            alert("Submission pipeline encountered a problem.");
+            alert("Submission error.");
         } finally {
             btn.disabled = false; btn.innerText = "Submit Check";
         }

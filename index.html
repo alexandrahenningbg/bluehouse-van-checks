@@ -56,7 +56,92 @@
             };
 
             // This is a placeholder URL. We will replace this with your Google Apps Script URL soon!
-            const WEBHOOK_URL = "https://example.com/api";
+            const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWk<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluehouse Van Check</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; margin: 2rem; background: #f5f5f7; }
+        form { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        label { display: block; margin: 1rem 0 0.3rem; font-weight: bold; }
+        input, select { width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.75rem; background: #0071e3; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+        button:disabled { background: #999; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #0077ed; }
+    </style>
+</head>
+<body>
+
+    <form id="vanForm">
+        <h2>Bluehouse Van Check</h2>
+        
+        <label for="associateId">Associate Name/ID:</label>
+        <input type="text" id="associateId" required placeholder="e.g., Alexandra Henning">
+
+        <label for="city">City / Region:</label>
+        <select id="city" required>
+            <option value="">Select a city...</option>
+            <option value="London">London</option>
+            <option value="New York">New York</option>
+            <option value="Berlin">Berlin</option>
+        </select>
+
+        <label for="vanId">Van ID:</label>
+        <input type="text" id="vanId" required placeholder="e.g., VAN-01">
+
+        <label for="shiftType">Shift Type:</label>
+        <select id="shiftType" required>
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+            <option value="Night">Night</option>
+        </select>
+
+        <button type="submit">Submit Check</button>
+    </form>
+
+    <script>
+        document.getElementById('vanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = e.target.querySelector('button');
+            submitButton.disabled = true;
+            submitButton.innerText = "Submitting...";
+            
+            const formData = {
+                associateId: document.getElementById('associateId').value,
+                city: document.getElementById('city').value,
+                vanId: document.getElementById('vanId').value,
+                shiftType: document.getElementById('shiftType').value,
+                submissionTimestamp: new Date().toISOString()
+            };
+
+            // Your live Google Apps Script endpoint!
+            const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
+
+            try {
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                alert("Van check submitted successfully to Google Sheets!");
+                document.getElementById('vanForm').reset();
+            } catch (error) {
+                alert("Error submitting form. Please check your connection.");
+                console.error(error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerText = "Submit Check";
+            }
+        });
+    </script>
+</body>
+</html>";
 
             try {
                 alert("Form submitted locally! Next, we will link this to your Google Sheet.");

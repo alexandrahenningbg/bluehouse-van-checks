@@ -16,150 +16,131 @@
         .radio-group { display: flex; flex-direction: column; gap: 12px; }
         .radio-option { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; }
         .radio-option input { margin: 0; width: 20px; height: 20px; }
-        input[type="file"] { margin-top: 8px; }
-        button { background: #673ab7; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        option:disabled { color: #a1a1a1; background: #eaeaea; }
+        button { background: #673ab7; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; }
         button:disabled { background: #b39ddb; cursor: not-allowed; }
+        .loading-text { font-style: italic; color: #5f6368; }
     </style>
 </head>
 <body>
 
 <div class="form-container">
     <div class="header-card">
-        <h1>CHI Van Essential Checks</h1>
+        <h1>Van Essential Audit Dashboard</h1>
+        <p id="loadingStatus" class="loading-text">Fetching roster config from Google Sheets...</p>
     </div>
 
-    <form id="vanAuditForm">
-        <!-- Metadata -->
+    <form id="vanAuditForm" style="display:none;">
+        <!-- Dynamic Dropdowns Container -->
         <div class="card">
-            <label class="card-title required" for="city">City</label>
-            <select id="city" required>
-                <option value="">Select City</option>
-                <option value="CHI">CHI</option>
-            </select>
+            <label class="card-title required" for="city">City Selection</label>
+            <select id="city" required><option value="">Select City</option></select>
         </div>
 
         <div class="card">
             <label class="card-title required" for="associateName">Your Name</label>
-            <select id="associateName" required>
-                <option value="">Select Name</option>
-                <option value="Cecil Loggins">Cecil Loggins</option>
-                <option value="External - Jevon Townsend">External - Jevon Townsend</option>
-            </select>
+            <select id="associateName" required disabled><option value="">Select city first...</option></select>
         </div>
 
         <div class="card">
             <label class="card-title required" for="vanId">Van ID</label>
-            <select id="vanId" required>
-                <option value="">Select Van</option>
-                <option value="B368">B368</option>
-                <option value="W367">W367</option>
-            </select>
+            <select id="vanId" required disabled><option value="">Select city first...</option></select>
         </div>
 
-        <!-- Vacuum -->
-        <div class="card">
-            <span class="card-title required">Vacuum (expected qty 1)</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="vacuum" value="Confirmed" required> Confirmed</label>
-                <label class="radio-option"><input type="radio" name="vacuum" value="Missing"> Missing</label>
-            </div>
-        </div>
-        <div class="card">
-            <label class="card-title required" for="vacuumPhoto">Vacuum Photo Confirmation</label>
-            <input type="file" id="vacuumPhoto" accept="image/*" required>
-        </div>
+        <!-- System Checks -->
+        <div class="card"><span class="card-title required">Vacuum (expected qty 1)</span><div class="radio-group"><label class="radio-option"><input type="radio" name="vacuum" value="Confirmed" required> Confirmed</label><label class="radio-option"><input type="radio" name="vacuum" value="Missing"> Missing</label></div></div>
+        <div class="card"><label class="card-title required" for="vacuumPhoto">Vacuum Photo Confirmation</label><input type="file" id="vacuumPhoto" accept="image/*" required></div>
 
-        <!-- Upholstery Machine -->
-        <div class="card">
-            <span class="card-title required">Upholstery Machine (expected qty 1)</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="upholstery" value="Confirmed" required> Confirmed</label>
-                <label class="radio-option"><input type="radio" name="upholstery" value="Missing"> Missing</label>
-            </div>
-        </div>
-        <div class="card">
-            <label class="card-title required" for="upholsteryPhoto">Upholstery Machine Photo Confirmation</label>
-            <input type="file" id="upholsteryPhoto" accept="image/*" required>
-        </div>
+        <div class="card"><span class="card-title required">Upholstery Machine (expected qty 1)</span><div class="radio-group"><label class="radio-option"><input type="radio" name="upholstery" value="Confirmed" required> Confirmed</label><label class="radio-option"><input type="radio" name="upholstery" value="Missing"> Missing</label></div></div>
+        <div class="card"><label class="card-title required" for="upholsteryPhoto">Upholstery Machine Photo Confirmation</label><input type="file" id="upholsteryPhoto" accept="image/*" required></div>
 
-        <!-- Ozone Machine -->
-        <div class="card">
-            <span class="card-title required">Ozone Machine (expected qty 1)</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="ozone" value="Confirmed" required> Confirmed</label>
-                <label class="radio-option"><input type="radio" name="ozone" value="Missing"> Missing</label>
-            </div>
-        </div>
-        <div class="card">
-            <label class="card-title required" for="ozonePhoto">Ozone Machine Photo Confirmation</label>
-            <input type="file" id="ozonePhoto" accept="image/*" required>
-        </div>
+        <div class="card"><span class="card-title required">Ozone Machine (expected qty 1)</span><div class="radio-group"><label class="radio-option"><input type="radio" name="ozone" value="Confirmed" required> Confirmed</label><label class="radio-option"><input type="radio" name="ozone" value="Missing"> Missing</label></div></div>
+        <div class="card"><label class="card-title required" for="ozonePhoto">Ozone Machine Photo Confirmation</label><input type="file" id="ozonePhoto" accept="image/*" required></div>
 
-        <!-- Ladder -->
-        <div class="card">
-            <span class="card-title required">Ladder (expected qty 1)</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="ladder" value="Confirmed" required> Confirmed</label>
-                <label class="radio-option"><input type="radio" name="ladder" value="Missing"> Missing</label>
-            </div>
-        </div>
-        <div class="card">
-            <label class="card-title required" for="ladderPhoto">Ladder Photo Confirmation</label>
-            <input type="file" id="ladderPhoto" accept="image/*" required>
-        </div>
+        <div class="card"><span class="card-title required">Ladder (expected qty 1)</span><div class="radio-group"><label class="radio-option"><input type="radio" name="ladder" value="Confirmed" required> Confirmed</label><label class="radio-option"><input type="radio" name="ladder" value="Missing"> Missing</label></div></div>
+        <div class="card"><label class="card-title required" for="ladderPhoto">Ladder Photo Confirmation</label><input type="file" id="ladderPhoto" accept="image/*" required></div>
 
-        <!-- Gas Tank -->
-        <div class="card">
-            <span class="card-title required">Gas Tank &gt; 25%</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="gasTank" value="Yes" required> Yes</label>
-                <label class="radio-option"><input type="radio" name="gasTank" value="No"> No</label>
-            </div>
-        </div>
+        <div class="card"><span class="card-title required">Gas Tank &gt; 25%</span><div class="radio-group"><label class="radio-option"><input type="radio" name="gasTank" value="Yes" required> Yes</label><label class="radio-option"><input type="radio" name="gasTank" value="No"> No</label></div></div>
 
-        <!-- Cleaning Kit -->
-        <div class="card">
-            <span class="card-title required">Cleaning Kit Fully Stocked?</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="cleaningKit" value="Yes" required> Yes</label>
-                <label class="radio-option"><input type="radio" name="cleaningKit" value="No"> No</label>
-            </div>
-        </div>
-        <div class="card">
-            <label class="card-title required" for="cleaningKitPhoto">Cleaning Kit Photo Confirmation</label>
-            <input type="file" id="cleaningKitPhoto" accept="image/*" required>
-        </div>
+        <div class="card"><span class="card-title required">Cleaning Kit Fully Stocked?</span><div class="radio-group"><label class="radio-option"><input type="radio" name="cleaningKit" value="Yes" required> Yes</label><label class="radio-option"><input type="radio" name="cleaningKit" value="No"> No</label></div></div>
+        <div class="card"><label class="card-title required" for="cleaningKitPhoto">Cleaning Kit Photo Confirmation</label><input type="file" id="cleaningKitPhoto" accept="image/*" required></div>
 
-        <!-- Cleanliness Rating -->
-        <div class="card">
-            <span class="card-title required">Rate the Van Cleanliness</span>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="cleanliness" value="5" required> 5 - Labelled, organized and clean</label>
-                <label class="radio-option"><input type="radio" name="cleanliness" value="4"> 4 - Mostly labelled, organized and clean</label>
-                <label class="radio-option"><input type="radio" name="cleanliness" value="3"> 3 - Some Issues with labelling, organization and cleanliness</label>
-                <label class="radio-option"><input type="radio" name="cleanliness" value="2"> 2 - A lot of issues with labelling, organization and cleanliness</label>
-                <label class="radio-option"><input type="radio" name="cleanliness" value="1"> 1 - Van is not labelled, organized or clean</label>
-            </div>
-        </div>
+        <div class="card"><span class="card-title required">Rate the Van Cleanliness</span><div class="radio-group"><label class="radio-option"><input type="radio" name="cleanliness" value="5" required> 5 - Labelled, organized and clean</label><label class="radio-option"><input type="radio" name="cleanliness" value="4"> 4 - Mostly labelled, organized and clean</label><label class="radio-option"><input type="radio" name="cleanliness" value="3"> 3 - Some Issues</label><label class="radio-option"><input type="radio" name="cleanliness" value="2"> 2 - Multiple Issues</label><label class="radio-option"><input type="radio" name="cleanliness" value="1"> 1 - Poor Condition</label></div></div>
 
-        <div class="card">
-            <label class="card-title" for="cleanlinessNotes">If van cleanliness was rated between 1 - 3, please be specific on what needs to be fixed.</label>
-            <textarea id="cleanlinessNotes" rows="3"></textarea>
-        </div>
+        <div class="card"><label class="card-title" for="cleanlinessNotes">Specific adjustment notes:</label><textarea id="cleanlinessNotes" rows="3"></textarea></div>
+        <div class="card"><label class="card-title" for="cleanlinessIssuesPhoto">Photos of issues:</label><input type="file" id="cleanlinessIssuesPhoto" accept="image/*"></div>
 
-        <div class="card">
-            <label class="card-title" for="cleanlinessIssuesPhoto">Photos of van cleanliness issues:</label>
-            <input type="file" id="cleanlinessIssuesPhoto" accept="image/*">
-        </div>
-
-        <div style="margin-bottom: 40px;">
-            <button type="submit" id="submitBtn">Submit Check</button>
-        </div>
+        <div style="margin-bottom: 40px;"><button type="submit" id="submitBtn">Submit Check</button></div>
     </form>
 </div>
 
 <script>
-    // Helper function to turn image uploads into text strings for transfer
+    const API_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
+    let sheetData = {};
+
+    // 1. Fetch system configs on load
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch(API_URL);
+            sheetData = await response.json();
+            
+            // Extract Unique Cities
+            const cities = [...new Set(sheetData.associates.map(a => a.city))];
+            const citySelect = document.getElementById('city');
+            cities.forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                citySelect.appendChild(opt);
+            });
+
+            document.getElementById('loadingStatus').style.display = 'none';
+            document.getElementById('vanAuditForm').style.display = 'block';
+        } catch(e) {
+            document.getElementById('loadingStatus').innerText = "Failed loading configurations.";
+        }
+    });
+
+    // 2. Cascade Dropdown filtering & evaluate Maintenance Locks
+    document.getElementById('city').addEventListener('change', (e) => {
+        const selectedCity = e.target.value;
+        const nameSelect = document.getElementById('associateName');
+        const vanSelect = document.getElementById('vanId');
+        const today = new Date().getTime();
+
+        nameSelect.innerHTML = '<option value="">Select Name</option>';
+        vanSelect.innerHTML = '<option value="">Select Van</option>';
+
+        if(!selectedCity) {
+            nameSelect.disabled = true; vanSelect.disabled = true;
+            return;
+        }
+
+        // Filter Associates
+        sheetData.associates.filter(a => a.city === selectedCity).forEach(a => {
+            let opt = document.createElement('option');
+            opt.value = a.displayName; opt.textContent = a.displayName;
+            nameSelect.appendChild(opt);
+        });
+
+        // Filter Vans and check if disabled today
+        sheetData.vans.filter(v => v.city === selectedCity).forEach(v => {
+            let opt = document.createElement('option');
+            opt.value = v.vanId;
+            opt.textContent = v.vanId;
+
+            // Check if this van hits a down window schedule matching current date
+            const maintenanceMatch = sheetData.disabledVans.find(d => d.vanId === v.vanId && today >= d.startDate && today <= d.endDate);
+            if(maintenanceMatch) {
+                opt.disabled = true;
+                opt.textContent += ` (Disabled: ${maintenanceMatch.reason})`;
+            }
+
+            vanSelect.appendChild(opt);
+        });
+
+        nameSelect.disabled = false; vanSelect.disabled = false;
+    });
+
     const toBase64 = file => new Promise((resolve, reject) => {
         if(!file) return resolve("");
         const reader = new FileReader();
@@ -171,8 +152,7 @@
     document.getElementById('vanAuditForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.innerText = "Processing Photos & Submitting...";
+        btn.disabled = true; btn.innerText = "Processing Details & Uploading Images...";
 
         try {
             const payload = {
@@ -189,7 +169,6 @@
                 cleanliness: document.querySelector('input[name="cleanliness"]:checked').value,
                 cleanlinessNotes: document.getElementById('cleanlinessNotes').value,
                 
-                // Process files
                 vacuumPhoto: await toBase64(document.getElementById('vacuumPhoto').files[0]),
                 upholsteryPhoto: await toBase64(document.getElementById('upholsteryPhoto').files[0]),
                 ozonePhoto: await toBase64(document.getElementById('ozonePhoto').files[0]),
@@ -198,23 +177,21 @@
                 cleanlinessIssuesPhoto: await toBase64(document.getElementById('cleanlinessIssuesPhoto').files[0])
             };
 
-            const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
-
-            await fetch(WEBHOOK_URL, {
+            await fetch(API_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            alert("Van audit submitted successfully!");
+            alert("Van audit logged into system database completely!");
             document.getElementById('vanAuditForm').reset();
-        } catch (error) {
-            alert("Submission error.");
-            console.error(error);
+            document.getElementById('associateName').disabled = true;
+            document.getElementById('vanId').disabled = true;
+        } catch (err) {
+            alert("Submission pipeline broke.");
         } finally {
-            btn.disabled = false;
-            btn.innerText = "Submit Check";
+            btn.disabled = false; btn.innerText = "Submit Check";
         }
     });
 </script>

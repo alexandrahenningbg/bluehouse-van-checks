@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHI Van Essential Checks</title>
+    <title>US Daily Essential Check</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 20px; background: #f0f4f9; color: #1f1f1f; }
         .form-container { max-width: 640px; margin: 0 auto; }
@@ -26,7 +26,7 @@
 
 <div class="form-container">
     <div class="header-card">
-        <h1>Van Essential Audit Dashboard</h1>
+        <h1>US Daily Essential Check</h1>
         <p id="loadingStatus" class="loading-text">Fetching roster config from Google Sheets...</p>
     </div>
 
@@ -73,8 +73,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxVs-rOXWSmco4txtloLLLUmwmlwciMERur-RpYZb3iyNMfmhbM_-nKLEpgywCQXCgj/exec";
-    let sheetData = {};
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVs-rOXWSmco4txtloLLLUmwmlwciMERur-RpYZb3iyNMfmhbM_-nKLEpgywCQXCgj/exec";    let sheetData = {};
 
     // Handles the cross-origin dynamic callback payload
     window.processSheetConfig = function(data) {

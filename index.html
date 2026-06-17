@@ -73,7 +73,6 @@
 </div>
 
 <script>
-    // Correct URL pointed directly to your fully authorized Apps Script deployment
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVs-rOXWSmco4txtloLLLUmwmlwciMERur-RpYZb3iyNMfmhbM_-nKLEpgywCQXCgj/exec";
     let sheetData = {};
 
@@ -98,7 +97,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         const jsonpScript = document.createElement('script');
-        // FIXED: Pointed directly to SCRIPT_URL to pull dropdown items configuration
         jsonpScript.src = SCRIPT_URL + "?callback=processSheetConfig";
         jsonpScript.onerror = () => {
             document.getElementById('loadingStatus').innerText = "Configuration fetch error. Connection restricted.";
@@ -141,11 +139,12 @@
         nameSelect.disabled = false; vanSelect.disabled = false;
     });
 
+    // FIXED: Keeps the entire raw base64 data uri intact so the backend saveFile function can parse it safely
     const toBase64 = file => new Promise((resolve, reject) => {
         if(!file) return resolve("");
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
     });
 
@@ -156,7 +155,7 @@
 
         try {
             const payload = {
-                submissionTimestamp: new Date().toISOString(),
+                submissionTimestamp: new Date().toLocaleString(),
                 city: document.getElementById('city').value,
                 associateName: document.getElementById('associateName').value,
                 vanId: document.getElementById('vanId').value,
@@ -177,11 +176,10 @@
                 cleanlinessIssuesPhoto: await toBase64(document.getElementById('cleanlinessIssuesPhoto').files[0])
             };
 
-            // FIXED: Submits form-data to the active SCRIPT_URL location
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             });
 
@@ -190,7 +188,7 @@
             document.getElementById('associateName').disabled = true;
             document.getElementById('vanId').disabled = true;
         } catch (err) {
-            alert("Submission error.");
+            alert("Submission error: " + err.toString());
         } finally {
             btn.disabled = false; btn.innerText = "Submit Check";
         }

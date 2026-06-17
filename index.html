@@ -73,11 +73,10 @@
 </div>
 
 <script>
-    // FIXED: Active authorized deployment ID endpoint routing
+    // Correct URL pointed directly to your fully authorized Apps Script deployment
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVs-rOXWSmco4txtloLLLUmwmlwciMERur-RpYZb3iyNMfmhbM_-nKLEpgywCQXCgj/exec";
     let sheetData = {};
 
-    // Handles the cross-origin dynamic callback payload
     window.processSheetConfig = function(data) {
         sheetData = data;
         if (sheetData.error) {
@@ -99,7 +98,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         const jsonpScript = document.createElement('script');
-        // FIXED: Replaced non-existent API_URL variable with SCRIPT_URL
+        // FIXED: Pointed directly to SCRIPT_URL to pull dropdown items configuration
         jsonpScript.src = SCRIPT_URL + "?callback=processSheetConfig";
         jsonpScript.onerror = () => {
             document.getElementById('loadingStatus').innerText = "Configuration fetch error. Connection restricted.";
@@ -178,7 +177,7 @@
                 cleanlinessIssuesPhoto: await toBase64(document.getElementById('cleanlinessIssuesPhoto').files[0])
             };
 
-            // FIXED: Replaced non-existent API_URL variable with SCRIPT_URL
+            // FIXED: Submits form-data to the active SCRIPT_URL location
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',

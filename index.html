@@ -16,7 +16,7 @@
         .radio-group { display: flex; flex-direction: column; gap: 12px; }
         .radio-option { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; }
         .radio-option input { margin: 0; width: 20px; height: 20px; }
-        option:disabled { color: #a1a1a1; background: #eaeaea; }
+        option:disabled { color: #a1a1a1; background: #eaeaea; font-style: italic; }
         button { background: #673ab7; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; }
         button:disabled { background: #b39ddb; cursor: not-allowed; }
         .loading-text { font-style: italic; color: #5f6368; }
@@ -31,7 +31,6 @@
     </div>
 
     <form id="vanAuditForm" style="display:none;">
-        <!-- Dynamic Dropdowns Container -->
         <div class="card">
             <label class="card-title required" for="city">City Selection</label>
             <select id="city" required><option value="">Select City</option></select>
@@ -47,7 +46,6 @@
             <select id="vanId" required disabled><option value="">Select city first...</option></select>
         </div>
 
-        <!-- System Checks -->
         <div class="card"><span class="card-title required">Vacuum (expected qty 1)</span><div class="radio-group"><label class="radio-option"><input type="radio" name="vacuum" value="Confirmed" required> Confirmed</label><label class="radio-option"><input type="radio" name="vacuum" value="Missing"> Missing</label></div></div>
         <div class="card"><label class="card-title required" for="vacuumPhoto">Vacuum Photo Confirmation</label><input type="file" id="vacuumPhoto" accept="image/*" required></div>
 
@@ -78,13 +76,16 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
     let sheetData = {};
 
-    // 1. Fetch system configs on load
     window.addEventListener('DOMContentLoaded', async () => {
         try {
             const response = await fetch(API_URL);
             sheetData = await response.json();
             
-            // Extract Unique Cities
+            if (sheetData.error) {
+                document.getElementById('loadingStatus').innerText = "Google Sheets Error: " + sheetData.error;
+                return;
+            }
+
             const cities = [...new Set(sheetData.associates.map(a => a.city))];
             const citySelect = document.getElementById('city');
             cities.forEach(c => {
@@ -96,11 +97,11 @@
             document.getElementById('loadingStatus').style.display = 'none';
             document.getElementById('vanAuditForm').style.display = 'block';
         } catch(e) {
-            document.getElementById('loadingStatus').innerText = "Failed loading configurations.";
+            document.getElementById('loadingStatus').innerText = "Failed loading configurations. Network Blocked.";
+            console.error(e);
         }
     });
 
-    // 2. Cascade Dropdown filtering & evaluate Maintenance Locks
     document.getElementById('city').addEventListener('change', (e) => {
         const selectedCity = e.target.value;
         const nameSelect = document.getElementById('associateName');
@@ -115,20 +116,17 @@
             return;
         }
 
-        // Filter Associates
         sheetData.associates.filter(a => a.city === selectedCity).forEach(a => {
             let opt = document.createElement('option');
             opt.value = a.displayName; opt.textContent = a.displayName;
             nameSelect.appendChild(opt);
         });
 
-        // Filter Vans and check if disabled today
         sheetData.vans.filter(v => v.city === selectedCity).forEach(v => {
             let opt = document.createElement('option');
             opt.value = v.vanId;
             opt.textContent = v.vanId;
 
-            // Check if this van hits a down window schedule matching current date
             const maintenanceMatch = sheetData.disabledVans.find(d => d.vanId === v.vanId && today >= d.startDate && today <= d.endDate);
             if(maintenanceMatch) {
                 opt.disabled = true;
@@ -152,7 +150,7 @@
     document.getElementById('vanAuditForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "Processing Details & Uploading Images...";
+        btn.disabled = true; btn.innerText = "Uploading Photos & Logging Entry...";
 
         try {
             const payload = {
@@ -189,7 +187,7 @@
             document.getElementById('associateName').disabled = true;
             document.getElementById('vanId').disabled = true;
         } catch (err) {
-            alert("Submission pipeline broke.");
+            alert("Submission pipeline encountered a problem.");
         } finally {
             btn.disabled = false; btn.innerText = "Submit Check";
         }

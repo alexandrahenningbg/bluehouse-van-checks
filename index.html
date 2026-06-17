@@ -3,153 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluehouse Van Check</title>
+    <title>CHI Van Essential Checks</title>
     <style>
-        body { font-family: -apple-system, sans-serif; margin: 2rem; background: #f5f5f7; }
-        form { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
-        label { display: block; margin: 1rem 0 0.3rem; font-weight: bold; }
-        input, select { width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 0.75rem; background: #0071e3; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
-        button:hover { background: #0077ed; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 20px; background: #f0f4f9; color: #1f1f1f; }
+        .form-container { max-width: 640px; margin: 0 auto; }
+        .header-card { background: #673ab7; color: white; padding: 24px; border-radius: 8px 8px 0 0; margin-bottom: 12px; }
+        .header-card h1 { margin: 0; font-size: 32px; font-weight: normal; }
+        .card { background: white; padding: 24px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #dadce0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .card-title { font-size: 16px; font-weight: 500; margin-bottom: 16px; display: block; }
+        .required::after { content: " *"; color: #d93025; }
+        select, input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 4px; box-sizing: border-box; font-size: 14px; background: #fff; }
+        .radio-group { display: flex; flex-direction: column; gap: 12px; }
+        .radio-option { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; }
+        .radio-option input { margin: 0; width: 20px; height: 20px; }
+        input[type="file"] { margin-top: 8px; }
+        button { background: #673ab7; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        button:disabled { background: #b39ddb; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <form id="vanForm">
-        <h2>Bluehouse Van Check</h2>
-        
-        <label for="associateId">Associate Name/ID:</label>
-        <input type="text" id="associateId" required placeholder="e.g., Alexandra Henning">
+<div class="form-container">
+    <div class="header-card">
+        <h1>CHI Van Essential Checks</h1>
+    </div>
 
-        <label for="city">City / Region:</label>
-        <select id="city" required>
-            <option value="">Select a city...</option>
-            <option value="London">London</option>
-            <option value="New York">New York</option>
-            <option value="Berlin">Berlin</option>
-        </select>
+    <form id="vanAuditForm">
+        <!-- Metadata -->
+        <div class="card">
+            <label class="card-title required" for="city">City</label>
+            <select id="city" required>
+                <option value="">Select City</option>
+                <option value="CHI">CHI</option>
+            </select>
+        </div>
 
-        <label for="vanId">Van ID:</label>
-        <input type="text" id="vanId" required placeholder="e.g., VAN-01">
+        <div class="card">
+            <label class="card-title required" for="associateName">Your Name</label>
+            <select id="associateName" required>
+                <option value="">Select Name</option>
+                <option value="Cecil Loggins">Cecil Loggins</option>
+                <option value="External - Jevon Townsend">External - Jevon Townsend</option>
+            </select>
+        </div>
 
-        <label for="shiftType">Shift Type:</label>
-        <select id="shiftType" required>
-            <option value="Morning">Morning</option>
-            <option value="Evening">Evening</option>
-            <option value="Night">Night</option>
-        </select>
+        <div class="card">
+            <label class="card-title required" for="vanId">Van ID</label>
+            <select id="vanId" required>
+                <option value="">Select Van</option>
+                <option value="B368">B368</option>
+                <option value="W367">W367</option>
+            </select>
+        </div>
 
-        <button type="submit">Submit Check</button>
+        <!-- Vacuum -->
+        <div class="card">
+            <span class="card-title required">Vacuum (expected qty 1)</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="vacuum" value="Confirmed" required> Confirmed</label>
+                <label class="radio-option"><input type="radio" name="vacuum" value="Missing"> Missing</label>
+            </div>
+        </div>
+        <div class="card">
+            <label class="card-title required" for="vacuumPhoto">Vacuum Photo Confirmation</label>
+            <input type="file" id="vacuumPhoto" accept="image/*" required>
+        </div>
+
+        <!-- Upholstery Machine -->
+        <div class="card">
+            <span class="card-title required">Upholstery Machine (expected qty 1)</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="upholstery" value="Confirmed" required> Confirmed</label>
+                <label class="radio-option"><input type="radio" name="upholstery" value="Missing"> Missing</label>
+            </div>
+        </div>
+        <div class="card">
+            <label class="card-title required" for="upholsteryPhoto">Upholstery Machine Photo Confirmation</label>
+            <input type="file" id="upholsteryPhoto" accept="image/*" required>
+        </div>
+
+        <!-- Ozone Machine -->
+        <div class="card">
+            <span class="card-title required">Ozone Machine (expected qty 1)</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="ozone" value="Confirmed" required> Confirmed</label>
+                <label class="radio-option"><input type="radio" name="ozone" value="Missing"> Missing</label>
+            </div>
+        </div>
+        <div class="card">
+            <label class="card-title required" for="ozonePhoto">Ozone Machine Photo Confirmation</label>
+            <input type="file" id="ozonePhoto" accept="image/*" required>
+        </div>
+
+        <!-- Ladder -->
+        <div class="card">
+            <span class="card-title required">Ladder (expected qty 1)</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="ladder" value="Confirmed" required> Confirmed</label>
+                <label class="radio-option"><input type="radio" name="ladder" value="Missing"> Missing</label>
+            </div>
+        </div>
+        <div class="card">
+            <label class="card-title required" for="ladderPhoto">Ladder Photo Confirmation</label>
+            <input type="file" id="ladderPhoto" accept="image/*" required>
+        </div>
+
+        <!-- Gas Tank -->
+        <div class="card">
+            <span class="card-title required">Gas Tank &gt; 25%</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="gasTank" value="Yes" required> Yes</label>
+                <label class="radio-option"><input type="radio" name="gasTank" value="No"> No</label>
+            </div>
+        </div>
+
+        <!-- Cleaning Kit -->
+        <div class="card">
+            <span class="card-title required">Cleaning Kit Fully Stocked?</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="cleaningKit" value="Yes" required> Yes</label>
+                <label class="radio-option"><input type="radio" name="cleaningKit" value="No"> No</label>
+            </div>
+        </div>
+        <div class="card">
+            <label class="card-title required" for="cleaningKitPhoto">Cleaning Kit Photo Confirmation</label>
+            <input type="file" id="cleaningKitPhoto" accept="image/*" required>
+        </div>
+
+        <!-- Cleanliness Rating -->
+        <div class="card">
+            <span class="card-title required">Rate the Van Cleanliness</span>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="cleanliness" value="5" required> 5 - Labelled, organized and clean</label>
+                <label class="radio-option"><input type="radio" name="cleanliness" value="4"> 4 - Mostly labelled, organized and clean</label>
+                <label class="radio-option"><input type="radio" name="cleanliness" value="3"> 3 - Some Issues with labelling, organization and cleanliness</label>
+                <label class="radio-option"><input type="radio" name="cleanliness" value="2"> 2 - A lot of issues with labelling, organization and cleanliness</label>
+                <label class="radio-option"><input type="radio" name="cleanliness" value="1"> 1 - Van is not labelled, organized or clean</label>
+            </div>
+        </div>
+
+        <div class="card">
+            <label class="card-title" for="cleanlinessNotes">If van cleanliness was rated between 1 - 3, please be specific on what needs to be fixed.</label>
+            <textarea id="cleanlinessNotes" rows="3"></textarea>
+        </div>
+
+        <div class="card">
+            <label class="card-title" for="cleanlinessIssuesPhoto">Photos of van cleanliness issues:</label>
+            <input type="file" id="cleanlinessIssuesPhoto" accept="image/*">
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <button type="submit" id="submitBtn">Submit Check</button>
+        </div>
     </form>
+</div>
 
-    <script>
-        document.getElementById('vanForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                associateId: document.getElementById('associateId').value,
+<script>
+    // Helper function to turn image uploads into text strings for transfer
+    const toBase64 = file => new Promise((resolve, reject) => {
+        if(!file) return resolve("");
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+    });
+
+    document.getElementById('vanAuditForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "Processing Photos & Submitting...";
+
+        try {
+            const payload = {
+                submissionTimestamp: new Date().toISOString(),
                 city: document.getElementById('city').value,
+                associateName: document.getElementById('associateName').value,
                 vanId: document.getElementById('vanId').value,
-                shiftType: document.getElementById('shiftType').value,
-                submissionTimestamp: new Date().toISOString() // Captured in clean UTC time for your logic later!
+                vacuum: document.querySelector('input[name="vacuum"]:checked').value,
+                upholstery: document.querySelector('input[name="upholstery"]:checked').value,
+                ozone: document.querySelector('input[name="ozone"]:checked').value,
+                ladder: document.querySelector('input[name="ladder"]:checked').value,
+                gasTank: document.querySelector('input[name="gasTank"]:checked').value,
+                cleaningKit: document.querySelector('input[name="cleaningKit"]:checked').value,
+                cleanliness: document.querySelector('input[name="cleanliness"]:checked').value,
+                cleanlinessNotes: document.getElementById('cleanlinessNotes').value,
+                
+                // Process files
+                vacuumPhoto: await toBase64(document.getElementById('vacuumPhoto').files[0]),
+                upholsteryPhoto: await toBase64(document.getElementById('upholsteryPhoto').files[0]),
+                ozonePhoto: await toBase64(document.getElementById('ozonePhoto').files[0]),
+                ladderPhoto: await toBase64(document.getElementById('ladderPhoto').files[0]),
+                cleaningKitPhoto: await toBase64(document.getElementById('cleaningKitPhoto').files[0]),
+                cleanlinessIssuesPhoto: await toBase64(document.getElementById('cleanlinessIssuesPhoto').files[0])
             };
 
-            // This is a placeholder URL. We will replace this with your Google Apps Script URL soon!
-            const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWk<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluehouse Van Check</title>
-    <style>
-        body { font-family: -apple-system, sans-serif; margin: 2rem; background: #f5f5f7; }
-        form { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
-        label { display: block; margin: 1rem 0 0.3rem; font-weight: bold; }
-        input, select { width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 0.75rem; background: #0071e3; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
-        button:disabled { background: #999; cursor: not-allowed; }
-        button:hover:not(:disabled) { background: #0077ed; }
-    </style>
-</head>
-<body>
-
-    <form id="vanForm">
-        <h2>Bluehouse Van Check</h2>
-        
-        <label for="associateId">Associate Name/ID:</label>
-        <input type="text" id="associateId" required placeholder="e.g., Alexandra Henning">
-
-        <label for="city">City / Region:</label>
-        <select id="city" required>
-            <option value="">Select a city...</option>
-            <option value="London">London</option>
-            <option value="New York">New York</option>
-            <option value="Berlin">Berlin</option>
-        </select>
-
-        <label for="vanId">Van ID:</label>
-        <input type="text" id="vanId" required placeholder="e.g., VAN-01">
-
-        <label for="shiftType">Shift Type:</label>
-        <select id="shiftType" required>
-            <option value="Morning">Morning</option>
-            <option value="Evening">Evening</option>
-            <option value="Night">Night</option>
-        </select>
-
-        <button type="submit">Submit Check</button>
-    </form>
-
-    <script>
-        document.getElementById('vanForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitButton = e.target.querySelector('button');
-            submitButton.disabled = true;
-            submitButton.innerText = "Submitting...";
-            
-            const formData = {
-                associateId: document.getElementById('associateId').value,
-                city: document.getElementById('city').value,
-                vanId: document.getElementById('vanId').value,
-                shiftType: document.getElementById('shiftType').value,
-                submissionTimestamp: new Date().toISOString()
-            };
-
-            // Your live Google Apps Script endpoint!
             const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxwn2R4VypUOzD5tL2-yCRWnDg01GICNr4YW7dw7sgHuqhTtH2-G7RBDpm3FmgniwNf/exec";
 
-            try {
-                await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                
-                alert("Van check submitted successfully to Google Sheets!");
-                document.getElementById('vanForm').reset();
-            } catch (error) {
-                alert("Error submitting form. Please check your connection.");
-                console.error(error);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerText = "Submit Check";
-            }
-        });
-    </script>
-</body>
-</html>";
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-            try {
-                alert("Form submitted locally! Next, we will link this to your Google Sheet.");
-                console.log("Data to send:", formData);
-            } catch (error) {
-                alert("Error submitting form.");
-            }
-        });
-    </script>
+            alert("Van audit submitted successfully!");
+            document.getElementById('vanAuditForm').reset();
+        } catch (error) {
+            alert("Submission error.");
+            console.error(error);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Submit Check";
+        }
+    });
+</script>
 </body>
 </html>

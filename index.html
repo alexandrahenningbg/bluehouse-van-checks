@@ -73,6 +73,7 @@
 </div>
 
 <script>
+    // CRITICAL: Paste your copied Web App URL right here inside the quotes
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVs-rOXWSmco4txtloLLLUmwmlwciMERur-RpYZb3iyNMfmhbM_-nKLEpgywCQXCgj/exec";
     let sheetData = {};
 
@@ -139,7 +140,6 @@
         nameSelect.disabled = false; vanSelect.disabled = false;
     });
 
-    // FIXED: Keeps the entire raw base64 data uri intact so the backend saveFile function can parse it safely
     const toBase64 = file => new Promise((resolve, reject) => {
         if(!file) return resolve("");
         const reader = new FileReader();
